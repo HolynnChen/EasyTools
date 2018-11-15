@@ -81,7 +81,7 @@ class Translate:
         async with aiohttp.ClientSession(cookies={'___rl__test__cookies':int(time.time()*1000)}) as session:
             await session.get('http://fanyi.youdao.com')#初始化一个cookie
             temp=await self.base_post(self.youdao_url,self.youdao_data(text))
-            return temp['translateResult'][0][0]['tgt']
+            return self.youdao_combine(temp['translateResult'])
 
     async def youdao_translate_list(self,text):
         temp=[self.youdao_data(i) for i in text]
@@ -89,8 +89,10 @@ class Translate:
             await session.get('http://fanyi.youdao.com')#初始化一个cookie
             result,fail=await asyncio.wait([self.base_post(session,self.youdao_url,temp[i],index=i+1) for i in range(len(temp))])
             js_result=map(lambda x:x[1]['translateResult'],sorted([i.result() for i in result]))
-            return ['\n'.join(list(map(lambda x:x[0]['tgt'] or '',k))) for k in js_result]
-            
+            return ['\n'.join([self.youdao_combine(i) for i in k]) for k in js_result]
+    def youdao_combine(self,todo):
+        if type(todo).__name__=='dict':return todo.get('tgt','')
+        return ''.join([self.youdao_combine(i) for i in todo])
     def youdao_data(self,text):
         text=text.lstrip('\ufeff')
         temp_data={}
