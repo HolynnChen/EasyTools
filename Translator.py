@@ -98,7 +98,7 @@ class Translate:
         temp_data={}
         temp_data['i']=text
         temp_data['salt']=str(int(time.time()*1000)+ random.randint(1,10))
-        temp_data['sign']=hashlib.md5(("fanyideskweb"+text+temp_data['salt']+"6x(ZHw]mwzX#u0V7@yfwK").encode('utf-8')).hexdigest()
+        temp_data['sign']=hashlib.md5(("fanyideskweb"+text+temp_data['salt']+"sr_3(QOHT)L2dx#uuGR@r").encode('utf-8')).hexdigest()
         temp_data={**self.base_youdao_data,**temp_data}
         return temp_data
 
