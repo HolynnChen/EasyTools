@@ -6,9 +6,9 @@ import random
 from urllib.parse import quote
 
 class Translate:
-    tkk='428194.2961085901'
+    tkk='428913.2184257098'#'428194.2961085901'
     base_server='https://translate.google.cn/'
-    base_url='translate_a/single?client=t&sl=en&tl=zh-CN&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&ie=UTF-8&oe=UTF-8&source=btn&ssel=0&tsel=0&kc=0&tk='
+    base_url='translate_a/single?client=webapp&sl=en&tl=zh-CN&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&source=btn&ssel=0&tsel=0&kc=0&tk='
     headers={
         'refer':base_server,
         'user-agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 QIHU 360EE'
@@ -23,10 +23,12 @@ class Translate:
     async def google_translate(self,text):
         url=f'{self.base_server}{self.base_url}{self.tk(text)}&q={quote(text)}'
         async with aiohttp.ClientSession() as session:
+            await session.get('https://translate.google.cn')#初始化一个cookie
             return ''.join(list(map(lambda x:x[0] or '',(await self.base_get(session,url))[0])))
     async def google_translate_list(self,text_list):
         temp=[f'{self.base_server}{self.base_url}{self.tk(text)}&q={quote(text)}' for text in text_list]
         async with aiohttp.ClientSession() as session:
+            await session.get('https://translate.google.cn')#初始化一个cookie
             result,fail=await asyncio.wait([self.base_get(session,temp[i],index=i+1) for i in range(len(temp))])
             js_result=map(lambda x:x[1],sorted([i.result() for i in result]))
             return [''.join(list(map(lambda x:x[0] or '',k[0]))) for k in js_result]
@@ -65,7 +67,7 @@ class Translate:
         a = self._xr(a, '+-3^+b+-f')
         a ^= int(d[1]) if len(d) > 1 else 0
         if a < 0:a = (a & 2147483647) + 2147483648
-        a %= 1000000 
+        a %= 1000000
         return '{}.{}'.format(a, a ^ b)
     def _xr(self, a, b):
         size_b = len(b)
@@ -98,7 +100,7 @@ class Translate:
         temp_data={}
         temp_data['i']=text
         temp_data['salt']=str(int(time.time()*1000)+ random.randint(1,10))
-        temp_data['sign']=hashlib.md5(("fanyideskweb"+text+temp_data['salt']+"sr_3(QOHT)L2dx#uuGR@r").encode('utf-8')).hexdigest()
+        temp_data['sign']=hashlib.md5(("fanyideskweb"+text+temp_data['salt']+"p09@Bn{h02_BIEe]$P^nG").encode('utf-8')).hexdigest()
         temp_data={**self.base_youdao_data,**temp_data}
         return temp_data
 
